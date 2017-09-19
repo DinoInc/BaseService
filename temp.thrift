@@ -1,4 +1,32 @@
-struct Add_Patient
+
+	/**
+	 * Function to find Patient using identifier on his/her linked Person object
+	 */
+
+	list<FHIR.Patient> FindPatientByIdentifier (
+		1 : required FHIR.Identifier identifier,
+	)
+
+	/**
+	 * Function to find Patient using id on his/her Patient object
+	 */
+
+	FHIR.Patient FindPatientById (
+		1 : required string id,
+	)
+
+	/**
+	 * Function to find Patient using HumanName on his/her Patient object
+	 */
+
+	FHIR.Patient FindPatientByName (
+		1 : required string name,
+	)
+
+
+/*
+
+struct AddPractitioner
 {
 	1 : required list<Identifier> identifier,
 	2 : optional list<HumanName> name,
@@ -6,47 +34,21 @@ struct Add_Patient
 	4 : optional AdministrativeGender gender,
 	5 : optional i32 birthDate,
 	6 : optional list<Address> address,
-	7 : required bool issueMR,
 }
 
-struct Find_Patient_By_Identifier
-{
-	1 : required Identifier identifier,
-}
-
-struct Find_Patient_By_Id
-{
-	1 : required string id,
-}
-
-struct Find_Patient_By_Name
-{
-	1 : required string name,
-}
-
-struct Add_Practitioner
-{
-	1 : required list<Identifier> identifier,
-	2 : optional list<HumanName> name,
-	3 : optional list<ContactPoint> contact,
-	4 : optional AdministrativeGender gender,
-	5 : optional i32 birthDate,
-	6 : optional list<Address> address,
-}
-
-struct Create_Clinical_Document
+struct CreateClinicalDocument
 {
 	1 : required Identifier medicalRecordNumber,
 }
 
-struct Add_Encounter
+struct AddEncounter
 {
 	1 : required string clinicalDocumentId,
 	2 : required list<Participant> participant,
 	3 : required Period period,
 }
 
-struct Add_Observation
+struct AddObservation
 {
 	1 : required string clinicalDocumentId,
 	2 : required ObservationMeasurement measureOf,
@@ -55,43 +57,43 @@ struct Add_Observation
 	5 : required i64 effectiveTime,
 }
 
-struct Add_Condition
+struct AddCondition
 {
 	1 : required string clinicalDocumentId,
 	2 : required string condition,
 	3 : required string encounterId,
 }
 
-struct Add_CarePlan
+struct AddCarePlan
 {
 	1 : required string clinicalDocumentId,
 	2 : required string careplan,
 	3 : required string encounterId,
 }
 
-struct Find_ClinicalDocument_By_MedicalRecordNumber
+struct FindClinicalDocumentByMedicalRecordNumber
 {
 	1 : required Identifier medicalRecordNumber,
 }
 
-struct Get_Clincal_Document_In_HTML
+struct GetClincalDocumentInHTML
 {	
 	1 : required string clinicalDocumentId,
 }
 
-struct Create_RequestDocument
+struct CreateRequestDocument
 {	
 	1 : required string parentDocumentId,
 }
 
-struct Add_ProcedureRequest
+struct AddProcedureRequest
 {	
 	1 : required string requestDocumentId,
 	2 : required CodeableConcept procedure,
 	3 : required strint reason,
 }
 
-struct Add_MedicationRequest
+struct AddMedicationRequest
 {	
 	1 : required string requestDocumentId,
 	2 : required Medication medication,
@@ -99,22 +101,21 @@ struct Add_MedicationRequest
 	4 : required list<string> note,
 }
 
-struct Get_RequestDocument_In_HTML
+struct GetRequestDocumentInHTML
 {	
 	1 : required string requestDocumentId,
 }
 
-struct Create_HospitalizationDocument
+struct CreateHospitalizationDocument
 {	
 	1 : required Identifier medicalRecordNumber,
 }
 
-struct Add_MedicationStatement
+struct AddMedicationStatement
 {	
 	1 : required string hospitalizationDocumentId,
 	2 : required Medication medication,
 	3 : required i64 effectiveTime,
 }
 
-
-
+*/
