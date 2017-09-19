@@ -59,5 +59,4 @@ service BaseService {
 	FHIR.Patient FindPatientByName (
 		1 : required string name,
 	)
-
 }
