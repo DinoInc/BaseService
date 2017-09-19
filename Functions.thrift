@@ -36,4 +36,28 @@ service BaseService {
 		7 : required bool issueMR,
 	)
 
+	/**
+	 * Function to find Patient using identifier on his/her linked Person object
+	 */
+
+	list<FHIR.Patient> FindPatientByIdentifier (
+		1 : required FHIR.Identifier identifier,
+	)
+
+	/**
+	 * Function to find Patient using id on his/her Patient object
+	 */
+
+	FHIR.Patient FindPatientById (
+		1 : required string id,
+	)
+
+	/**
+	 * Function to find Patient using HumanName on his/her Patient object
+	 */
+
+	FHIR.Patient FindPatientByName (
+		1 : required string name,
+	)
+
 }
