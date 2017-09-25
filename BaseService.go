@@ -1,14 +1,20 @@
 package BaseService
 
 import (
+	"fmt"
+	"net/http"
+	"io/ioutil"
+	"encoding/json"
 	"github.com/DinoInc/BaseService/domain"
 	"github.com/DinoInc/BaseService/service"
 )
 
-type BaseService struct{}
+type BaseService struct{
+	endpoint string
+}
 
-func NewBaseService() *BaseService {
-	return &BaseService{}
+func NewBaseService(endpoint string) *BaseService {
+	return &BaseService{endpoint: endpoint}
 }
 
 //
@@ -48,6 +54,25 @@ func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) (r 
 // Parameters:
 //  - Id
 func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) {
+	res, err := http.Get(BaseService.endpoint + "/Patient/" + id)
+
+	if err != nil {
+        return nil, err
+    }
+
+    body, err := ioutil.ReadAll(res.Body)
+
+    if err != nil {
+        return nil, err
+    }
+
+    var data map[string]interface{}
+    json.Unmarshal(body, &data)
+    fmt.Printf("Results: %v\n", string(body))
+    fmt.Printf("resource Type: %s", data["resourceType"].(string))
+    patient := domain.NewPatient()
+    patient.Active = data["active"].(bool)
+
 	return nil, nil
 }
 
