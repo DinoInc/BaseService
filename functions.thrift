@@ -1,4 +1,4 @@
-include "FHIR.thrift"
+include "domain.thrift"
 
 namespace go BaseService
 
@@ -27,12 +27,12 @@ service BaseService {
 	 */
 
 	ReturnType AddPatient (
-		1 : required list<FHIR.Identifier> identifier,
-		2 : list<FHIR.HumanName> name,
-		3 : list<FHIR.ContactPoint> contact,
-		4 : optional FHIR.AdministrativeGender gender,
+		1 : required list<domain.Identifier> identifier,
+		2 : list<domain.HumanName> name,
+		3 : list<domain.ContactPoint> contact,
+		4 : optional domain.AdministrativeGender gender,
 		5 : optional i32 birthDate,
-		6 : optional list<FHIR.Address> address,
+		6 : optional list<domain.Address> address,
 		7 : required bool issueMR,
 	)
 
@@ -40,15 +40,15 @@ service BaseService {
 	 * Function to find Patient using identifier on his/her linked Person object
 	 */
 
-	list<FHIR.Patient> FindPatientByIdentifier (
-		1 : required FHIR.Identifier identifier,
+	list<domain.Patient> FindPatientByIdentifier (
+		1 : required domain.Identifier identifier,
 	)
 
 	/**
 	 * Function to find Patient using id on his/her Patient object
 	 */
 
-	FHIR.Patient FindPatientById (
+	domain.Patient FindPatientById (
 		1 : required string id,
 	)
 
@@ -56,7 +56,7 @@ service BaseService {
 	 * Function to find Patient using HumanName on his/her Patient object
 	 */
 
-	FHIR.Patient FindPatientByName (
+	domain.Patient FindPatientByName (
 		1 : required string name,
-	)
+	)  
 }
