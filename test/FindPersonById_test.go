@@ -1,25 +1,15 @@
 package test
 
-import (
-	"github.com/DinoInc/BaseService"
-	"testing"
-)
+import "testing"
+import "github.com/DinoInc/BaseService"
 
 func TestFindPatientByIdNotFound(t *testing.T) {
 	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
 	res, err := service.FindPatientById("000000000000000000000000")
 
-	if err == nil {
-		t.Error("FindPatientById on NotFound err nil")
-	}
-
-	if res != nil {
-		t.Error("FindPatientById on NotFound res not nil")
-	}
-
-	if err.(BaseService.Error).Code != 404 {
-		t.Error("FindPatientById on NotFound wrong error code")
-	}
+	AssertNotNil(t, "FindPatientById on NotFound", "err", err)
+	AssertNil(t, "FindPatientById on NotFound", "res", res)
+	AssertCode(t, "FindPatientById on NotFound", err, 404)
 
 }
 
@@ -27,13 +17,8 @@ func TestFindPatientByIdFound(t *testing.T) {
 	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
 	res, err := service.FindPatientById("59b651e4fad1c1000179717c")
 
-	if err != nil {
-		t.Error("FindPatientById on Found err not nil")
-	}
-
-	if res == nil {
-		t.Error("FindPatientById on Found res nil")
-	}
+	AssertNil(t, "FindPatientById on Found", "err", err)
+	AssertNotNil(t, "FindPatientById on Found", "res", res)
 
 	if *(res.ID) != "59b651e4fad1c1000179717c" {
 		t.Error("FindPatientById on Found res.ID is not equal")

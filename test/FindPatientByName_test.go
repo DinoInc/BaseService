@@ -10,9 +10,9 @@ func TestFindPatientByNameNotFound(t *testing.T) {
 	AssertNotNil(t, "FindPatientByName on NotFound", "err", err)
 	AssertNil(t, "FindPatientByName on NotFound", "res", res)
 
-	if err.(BaseService.Error).Code != 404 {
-		t.Error("FindPatientByName on NotFound wrong error code")
-	}
+	if len(res) > 0 {
+		t.Error("FindPatientByName on NotFound len(res) not zero")
+	}	
 
 }
 
