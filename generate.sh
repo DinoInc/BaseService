@@ -11,5 +11,6 @@ thrift --gen go contract.thrift
 mv gen-go/* .
 
 sed -i "s/\"domain\"/\"$REPO\/domain\"/g" contract/*.go
+sed -i -f reserved_word.sed domain/*.go
 
 rmdir gen-go
