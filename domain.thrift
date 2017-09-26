@@ -285,13 +285,7 @@ struct Patient_Communication
 	5 : optional bool preferred,
 }
 
-struct id
-{
-	1 : optional list<binary> extension,
-	2 : optional string id,
-	3 : optional string value,
-}
-
+typedef string id
 
 struct instant
 {
@@ -366,7 +360,7 @@ struct Patient
 	10 : optional list<binary> extension,
 	11 : optional AdministrativeGender gender,
 	12 : optional list<Reference> generalPractitioner,
-	13 : optional id _id,
+	13 : optional id id,
 	14 : optional list<Identifier> identifier,
 	15 : optional uri implicitRules,
 	16 : optional code language,
