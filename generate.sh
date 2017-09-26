@@ -15,9 +15,9 @@ if [ "$current_version" != "Thrift version $THRIFT_VERSION" ]; then
 	exit 1
 fi
 
-thrift --gen go domain.thrift >/dev/null 2>&1
+thrift --gen go thrift/domain.thrift >/dev/null 2>&1
 gen_domain=$?
-thrift --gen go contract.thrift >/dev/null 2>&1
+thrift --gen go thrift/contract.thrift >/dev/null 2>&1
 gen_contract=$?
 
 if ((gen_domain == 0)) && ((gen_contract == 0)); then
@@ -28,7 +28,7 @@ if ((gen_domain == 0)) && ((gen_contract == 0)); then
 	mv gen-go/* .
 
 	sed -i "s/\"domain\"/\"$REPO\/domain\"/g" contract/*.go
-	sed -i -f reserved_word.sed domain/*.go
+	sed -i -f thrift/reserved_word.sed domain/*.go
 
 else
 
