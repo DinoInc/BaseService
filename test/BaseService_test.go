@@ -5,11 +5,19 @@ import (
 	"testing"
 )
 
-func TestFindPatientByIdNotFound(*testing.T){
+func TestFindPatientByIdNotFound(*testing.T) {
 
 }
 
-func TestFindPatientByIdFound(*testing.T){
+func TestFindPatientByIdFound(t *testing.T) {
 	handler := BaseService.NewBaseService("http://server.ibrohim.me:3001")
-	handler.FindPatientById("59b651e4fad1c1000179717c")
+	res, err := handler.FindPatientById("59b651e4fad1c1000179717c")
+
+	if err != nil {
+		t.Error("FindPatientById on Found err not nil")
+	}
+
+	if res == nil {
+		t.Error("FindPatientById on Found res nil")
+	}
 }

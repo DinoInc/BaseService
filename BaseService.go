@@ -2,7 +2,6 @@ package BaseService
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -69,13 +68,10 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 		return nil, err
 	}
 
-	var data map[string]interface{}
-	json.Unmarshal(body, &data)
-	fmt.Printf("Results: %v\n", string(body))
-	fmt.Printf("resource Type: %s", data["resourceType"].(string))
-	//patient := domain.NewPatient()
+	var patient domain.Patient
+	json.Unmarshal(body, &patient)
 
-	return nil, nil
+	return &patient, nil
 }
 
 // Function to find Patient using HumanName on his/her Patient object
