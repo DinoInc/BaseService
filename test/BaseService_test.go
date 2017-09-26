@@ -20,4 +20,8 @@ func TestFindPatientByIdFound(t *testing.T) {
 	if res == nil {
 		t.Error("FindPatientById on Found res nil")
 	}
+
+	if *(res.ID) != "59b651e4fad1c1000179717c" {
+		t.Error("FindPatientById on Found res.ID is not equal")
+	}
 }
