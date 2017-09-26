@@ -1,15 +1,18 @@
 package BaseService
 
 import (
-	"fmt"
-	"net/http"
-	"io/ioutil"
 	"encoding/json"
-	"github.com/DinoInc/BaseService/domain"
-	"github.com/DinoInc/BaseService/service"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 )
 
-type BaseService struct{
+import (
+	"github.com/DinoInc/BaseService/contract"
+	"github.com/DinoInc/BaseService/domain"
+)
+
+type BaseService struct {
 	endpoint string
 }
 
@@ -37,7 +40,7 @@ func NewBaseService(endpoint string) *BaseService {
 //  - BirthDate
 //  - Address
 //  - IssueMR
-func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender *domain.AdministrativeGender, birthDate int32, address []*domain.Address, issueMR bool) (r *service.ReturnType, err error) {
+func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender *domain.AdministrativeGender, birthDate int32, address []*domain.Address, issueMR bool) (r *contract.ReturnType, err error) {
 	return nil, nil
 }
 
@@ -54,24 +57,23 @@ func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) (r 
 // Parameters:
 //  - Id
 func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) {
-	res, err := http.Get(BaseService.endpoint + "/Patient/" + id)
+	res, err := http.Get(s.endpoint + "/Patient/" + id)
 
 	if err != nil {
-        return nil, err
-    }
+		return nil, err
+	}
 
-    body, err := ioutil.ReadAll(res.Body)
+	body, err := ioutil.ReadAll(res.Body)
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    var data map[string]interface{}
-    json.Unmarshal(body, &data)
-    fmt.Printf("Results: %v\n", string(body))
-    fmt.Printf("resource Type: %s", data["resourceType"].(string))
-    patient := domain.NewPatient()
-    patient.Active = data["active"].(bool)
+	var data map[string]interface{}
+	json.Unmarshal(body, &data)
+	fmt.Printf("Results: %v\n", string(body))
+	fmt.Printf("resource Type: %s", data["resourceType"].(string))
+	//patient := domain.NewPatient()
 
 	return nil, nil
 }

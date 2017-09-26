@@ -1,3 +1,5 @@
+namespace go domain
+
 enum NameUse_list
 {
 	NameUse_list_anonymous,

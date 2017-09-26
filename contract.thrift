@@ -1,6 +1,6 @@
 include "domain.thrift"
 
-namespace go BaseService
+namespace go contract
 
 struct ReturnType {
 	1: required i32 code
@@ -30,9 +30,9 @@ service BaseService {
 		1 : required list<domain.Identifier> identifier,
 		2 : list<domain.HumanName> name,
 		3 : list<domain.ContactPoint> contact,
-		4 : optional domain.AdministrativeGender gender,
-		5 : optional i32 birthDate,
-		6 : optional list<domain.Address> address,
+		4 : domain.AdministrativeGender gender,
+		5 : i32 birthDate,
+		6 : list<domain.Address> address,
 		7 : required bool issueMR,
 	)
 

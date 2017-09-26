@@ -4,7 +4,7 @@ import (
 	"crypto/tls"
 	"fmt"
 	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/DinoInc/BaseService/service"
+	"github.com/DinoInc/BaseService/contract"
 )
 
 func RunServer(transportFactory thrift.TTransportFactory, protocolFactory thrift.TProtocolFactory, addr string, secure bool) error {
@@ -29,7 +29,7 @@ func RunServer(transportFactory thrift.TTransportFactory, protocolFactory thrift
 	fmt.Printf("%T\n", transport)
 
 	handler := NewBaseService("server.ibrohim.me:3001")
-	processor := service.NewBaseServiceProcessor(handler)
+	processor := contract.NewBaseServiceProcessor(handler)
 	server := thrift.NewTSimpleServer4(processor, transport, transportFactory, protocolFactory)
 
 	fmt.Println("Starting the simple server... on ", addr)
