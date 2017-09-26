@@ -1,14 +1,16 @@
 #!/bin/bash
 
 REPO='github.com\/DinoInc\/BaseService'
-THRIFT_VERSION='0.10.0'
+THRIFT_VERSION="0.10.0"
 
 if ! [ -x "$(command -v thrift)" ]; then
 	echo "Thrift not found."
 	exit 1
 fi
 
-if ! [ ${thrift --version} -eq THRIFT_VERSION ]; then
+current_version=$(thrift --version)
+
+if [ "$current_version" != "Thrift version $THRIFT_VERSION" ]; then
 	echo "Thrift version not match."
 	exit 1
 fi
@@ -35,3 +37,5 @@ else
 fi
 
 rmdir gen-go
+
+echo "success."
