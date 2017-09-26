@@ -62,16 +62,23 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 		return nil, err
 	}
 
-	body, err := ioutil.ReadAll(res.Body)
+	if res.StatusCode == 200 {
 
-	if err != nil {
-		return nil, err
+		body, err := ioutil.ReadAll(res.Body)
+
+		if err != nil {
+			return nil, err
+		}
+
+		var patient domain.Patient
+		json.Unmarshal(body, &patient)
+
+		return &patient, nil
+
 	}
 
-	var patient domain.Patient
-	json.Unmarshal(body, &patient)
+	return nil, NewError(res.StatusCode, "")
 
-	return &patient, nil
 }
 
 // Function to find Patient using HumanName on his/her Patient object

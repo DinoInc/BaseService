@@ -17,7 +17,7 @@ func TestFindPatientByIdNotFound(t *testing.T) {
 		t.Error("FindPatientById on NotFound res not nil")
 	}
 
-	if err.(BaseService.ErrorType).Code != 404 {
+	if err.(BaseService.Error).Code != 404 {
 		t.Error("FindPatientById on NotFound wrong error code")
 	}
 
