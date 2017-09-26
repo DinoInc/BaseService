@@ -56,7 +56,7 @@ service BaseService {
 	 * Function to find Patient using HumanName on his/her Patient object
 	 */
 
-	domain.Patient FindPatientByName (
+	list<domain.Patient> FindPatientByName (
 		1 : required string name,
 	)  
 }

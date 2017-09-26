@@ -295,7 +295,7 @@ type BaseService interface {
   // 
   // Parameters:
   //  - Name
-  FindPatientByName(name string) (r *domain.Patient, err error)
+  FindPatientByName(name string) (r []*domain.Patient, err error)
 }
 
 type BaseServiceClient struct {
@@ -584,7 +584,7 @@ func (p *BaseServiceClient) recvFindPatientById() (value *domain.Patient, err er
 // 
 // Parameters:
 //  - Name
-func (p *BaseServiceClient) FindPatientByName(name string) (r *domain.Patient, err error) {
+func (p *BaseServiceClient) FindPatientByName(name string) (r []*domain.Patient, err error) {
   if err = p.sendFindPatientByName(name); err != nil { return }
   return p.recvFindPatientByName()
 }
@@ -612,7 +612,7 @@ func (p *BaseServiceClient) sendFindPatientByName(name string)(err error) {
 }
 
 
-func (p *BaseServiceClient) recvFindPatientByName() (value *domain.Patient, err error) {
+func (p *BaseServiceClient) recvFindPatientByName() (value []*domain.Patient, err error) {
   iprot := p.InputProtocol
   if iprot == nil {
     iprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -866,7 +866,7 @@ func (p *baseServiceProcessorFindPatientByName) Process(seqId int32, iprot, opro
 
   iprot.ReadMessageEnd()
   result := BaseServiceFindPatientByNameResult{}
-var retval *domain.Patient
+var retval []*domain.Patient
   var err2 error
   if retval, err2 = p.handler.FindPatientByName(args.Name); err2 != nil {
     x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FindPatientByName: " + err2.Error())
@@ -1841,19 +1841,17 @@ func (p *BaseServiceFindPatientByNameArgs) String() string {
 // Attributes:
 //  - Success
 type BaseServiceFindPatientByNameResult struct {
-  Success *domain.Patient `thrift:"success,0" db:"success" json:"success,omitempty"`
+  Success []*domain.Patient `thrift:"success,0" db:"success" json:"success,omitempty"`
 }
 
 func NewBaseServiceFindPatientByNameResult() *BaseServiceFindPatientByNameResult {
   return &BaseServiceFindPatientByNameResult{}
 }
 
-var BaseServiceFindPatientByNameResult_Success_DEFAULT *domain.Patient
-func (p *BaseServiceFindPatientByNameResult) GetSuccess() *domain.Patient {
-  if !p.IsSetSuccess() {
-    return BaseServiceFindPatientByNameResult_Success_DEFAULT
-  }
-return p.Success
+var BaseServiceFindPatientByNameResult_Success_DEFAULT []*domain.Patient
+
+func (p *BaseServiceFindPatientByNameResult) GetSuccess() []*domain.Patient {
+  return p.Success
 }
 func (p *BaseServiceFindPatientByNameResult) IsSetSuccess() bool {
   return p.Success != nil
@@ -1892,9 +1890,21 @@ func (p *BaseServiceFindPatientByNameResult) Read(iprot thrift.TProtocol) error 
 }
 
 func (p *BaseServiceFindPatientByNameResult)  ReadField0(iprot thrift.TProtocol) error {
-  p.Success = &domain.Patient{}
-  if err := p.Success.Read(iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
+  _, size, err := iprot.ReadListBegin()
+  if err != nil {
+    return thrift.PrependError("error reading list begin: ", err)
+  }
+  tSlice := make([]*domain.Patient, 0, size)
+  p.Success =  tSlice
+  for i := 0; i < size; i ++ {
+    _elem15 := &domain.Patient{}
+    if err := _elem15.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem15), err)
+    }
+    p.Success = append(p.Success, _elem15)
+  }
+  if err := iprot.ReadListEnd(); err != nil {
+    return thrift.PrependError("error reading list end: ", err)
   }
   return nil
 }
@@ -1914,10 +1924,18 @@ func (p *BaseServiceFindPatientByNameResult) Write(oprot thrift.TProtocol) error
 
 func (p *BaseServiceFindPatientByNameResult) writeField0(oprot thrift.TProtocol) (err error) {
   if p.IsSetSuccess() {
-    if err := oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+    if err := oprot.WriteFieldBegin("success", thrift.LIST, 0); err != nil {
       return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
-    if err := p.Success.Write(oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
+    if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Success)); err != nil {
+      return thrift.PrependError("error writing list begin: ", err)
+    }
+    for _, v := range p.Success {
+      if err := v.Write(oprot); err != nil {
+        return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", v), err)
+      }
+    }
+    if err := oprot.WriteListEnd(); err != nil {
+      return thrift.PrependError("error writing list end: ", err)
     }
     if err := oprot.WriteFieldEnd(); err != nil {
       return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }

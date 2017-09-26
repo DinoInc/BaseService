@@ -26,7 +26,7 @@ func Usage() {
   fmt.Fprintln(os.Stderr, "  ReturnType AddPatient( identifier,  name,  contact, AdministrativeGender gender, i32 birthDate,  address, bool issueMR)")
   fmt.Fprintln(os.Stderr, "   FindPatientByIdentifier(Identifier identifier)")
   fmt.Fprintln(os.Stderr, "  Patient FindPatientById(string id)")
-  fmt.Fprintln(os.Stderr, "  Patient FindPatientByName(string name)")
+  fmt.Fprintln(os.Stderr, "   FindPatientByName(string name)")
   fmt.Fprintln(os.Stderr)
   os.Exit(0)
 }
@@ -126,97 +126,97 @@ func main() {
       fmt.Fprintln(os.Stderr, "AddPatient requires 7 args")
       flag.Usage()
     }
-    arg15 := flag.Arg(1)
-    mbTrans16 := thrift.NewTMemoryBufferLen(len(arg15))
-    defer mbTrans16.Close()
-    _, err17 := mbTrans16.WriteString(arg15)
-    if err17 != nil { 
+    arg16 := flag.Arg(1)
+    mbTrans17 := thrift.NewTMemoryBufferLen(len(arg16))
+    defer mbTrans17.Close()
+    _, err18 := mbTrans17.WriteString(arg16)
+    if err18 != nil { 
       Usage()
       return
     }
-    factory18 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt19 := factory18.GetProtocol(mbTrans16)
+    factory19 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt20 := factory19.GetProtocol(mbTrans17)
     containerStruct0 := contract.NewBaseServiceAddPatientArgs()
-    err20 := containerStruct0.ReadField1(jsProt19)
-    if err20 != nil {
+    err21 := containerStruct0.ReadField1(jsProt20)
+    if err21 != nil {
       Usage()
       return
     }
     argvalue0 := containerStruct0.Identifier
     value0 := argvalue0
-    arg21 := flag.Arg(2)
-    mbTrans22 := thrift.NewTMemoryBufferLen(len(arg21))
-    defer mbTrans22.Close()
-    _, err23 := mbTrans22.WriteString(arg21)
-    if err23 != nil { 
+    arg22 := flag.Arg(2)
+    mbTrans23 := thrift.NewTMemoryBufferLen(len(arg22))
+    defer mbTrans23.Close()
+    _, err24 := mbTrans23.WriteString(arg22)
+    if err24 != nil { 
       Usage()
       return
     }
-    factory24 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt25 := factory24.GetProtocol(mbTrans22)
+    factory25 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt26 := factory25.GetProtocol(mbTrans23)
     containerStruct1 := contract.NewBaseServiceAddPatientArgs()
-    err26 := containerStruct1.ReadField2(jsProt25)
-    if err26 != nil {
+    err27 := containerStruct1.ReadField2(jsProt26)
+    if err27 != nil {
       Usage()
       return
     }
     argvalue1 := containerStruct1.Name
     value1 := argvalue1
-    arg27 := flag.Arg(3)
-    mbTrans28 := thrift.NewTMemoryBufferLen(len(arg27))
-    defer mbTrans28.Close()
-    _, err29 := mbTrans28.WriteString(arg27)
-    if err29 != nil { 
+    arg28 := flag.Arg(3)
+    mbTrans29 := thrift.NewTMemoryBufferLen(len(arg28))
+    defer mbTrans29.Close()
+    _, err30 := mbTrans29.WriteString(arg28)
+    if err30 != nil { 
       Usage()
       return
     }
-    factory30 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt31 := factory30.GetProtocol(mbTrans28)
+    factory31 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt32 := factory31.GetProtocol(mbTrans29)
     containerStruct2 := contract.NewBaseServiceAddPatientArgs()
-    err32 := containerStruct2.ReadField3(jsProt31)
-    if err32 != nil {
+    err33 := containerStruct2.ReadField3(jsProt32)
+    if err33 != nil {
       Usage()
       return
     }
     argvalue2 := containerStruct2.Contact
     value2 := argvalue2
-    arg33 := flag.Arg(4)
-    mbTrans34 := thrift.NewTMemoryBufferLen(len(arg33))
-    defer mbTrans34.Close()
-    _, err35 := mbTrans34.WriteString(arg33)
-    if err35 != nil {
+    arg34 := flag.Arg(4)
+    mbTrans35 := thrift.NewTMemoryBufferLen(len(arg34))
+    defer mbTrans35.Close()
+    _, err36 := mbTrans35.WriteString(arg34)
+    if err36 != nil {
       Usage()
       return
     }
-    factory36 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt37 := factory36.GetProtocol(mbTrans34)
+    factory37 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt38 := factory37.GetProtocol(mbTrans35)
     argvalue3 := domain.NewAdministrativeGender()
-    err38 := argvalue3.Read(jsProt37)
-    if err38 != nil {
+    err39 := argvalue3.Read(jsProt38)
+    if err39 != nil {
       Usage()
       return
     }
     value3 := argvalue3
-    tmp4, err39 := (strconv.Atoi(flag.Arg(5)))
-    if err39 != nil {
+    tmp4, err40 := (strconv.Atoi(flag.Arg(5)))
+    if err40 != nil {
       Usage()
       return
     }
     argvalue4 := int32(tmp4)
     value4 := argvalue4
-    arg40 := flag.Arg(6)
-    mbTrans41 := thrift.NewTMemoryBufferLen(len(arg40))
-    defer mbTrans41.Close()
-    _, err42 := mbTrans41.WriteString(arg40)
-    if err42 != nil { 
+    arg41 := flag.Arg(6)
+    mbTrans42 := thrift.NewTMemoryBufferLen(len(arg41))
+    defer mbTrans42.Close()
+    _, err43 := mbTrans42.WriteString(arg41)
+    if err43 != nil { 
       Usage()
       return
     }
-    factory43 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt44 := factory43.GetProtocol(mbTrans41)
+    factory44 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt45 := factory44.GetProtocol(mbTrans42)
     containerStruct5 := contract.NewBaseServiceAddPatientArgs()
-    err45 := containerStruct5.ReadField6(jsProt44)
-    if err45 != nil {
+    err46 := containerStruct5.ReadField6(jsProt45)
+    if err46 != nil {
       Usage()
       return
     }
@@ -232,19 +232,19 @@ func main() {
       fmt.Fprintln(os.Stderr, "FindPatientByIdentifier requires 1 args")
       flag.Usage()
     }
-    arg47 := flag.Arg(1)
-    mbTrans48 := thrift.NewTMemoryBufferLen(len(arg47))
-    defer mbTrans48.Close()
-    _, err49 := mbTrans48.WriteString(arg47)
-    if err49 != nil {
+    arg48 := flag.Arg(1)
+    mbTrans49 := thrift.NewTMemoryBufferLen(len(arg48))
+    defer mbTrans49.Close()
+    _, err50 := mbTrans49.WriteString(arg48)
+    if err50 != nil {
       Usage()
       return
     }
-    factory50 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt51 := factory50.GetProtocol(mbTrans48)
+    factory51 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt52 := factory51.GetProtocol(mbTrans49)
     argvalue0 := domain.NewIdentifier()
-    err52 := argvalue0.Read(jsProt51)
-    if err52 != nil {
+    err53 := argvalue0.Read(jsProt52)
+    if err53 != nil {
       Usage()
       return
     }

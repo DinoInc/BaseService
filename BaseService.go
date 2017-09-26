@@ -78,6 +78,6 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 //
 // Parameters:
 //  - Name
-func (s *BaseService) FindPatientByName(name string) (r *domain.Patient, err error) {
+func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err error) {
 	return nil, nil
 }
