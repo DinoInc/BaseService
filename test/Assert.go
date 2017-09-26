@@ -36,8 +36,13 @@ func AssertNotNil(t *testing.T, testName string, varName string, input interface
 }
 
 func AssertCode(t *testing.T, testName string, err error, expectedCode int) {
-	var errorCode = err.(BaseService.Error).Code
-	if errorCode != expectedCode {
-		t.Error(testName + ", err.Code = " + strconv.Itoa(errorCode) + " not match, expected = " + strconv.Itoa(expectedCode))
+	baseServiceError, isBaseServiceError := err.(BaseService.Error)
+
+	if !isBaseServiceError {
+		t.Error(testName + ", err expected to be a BaseService.Error")
+	}
+
+	if isBaseServiceError && baseServiceError.Code != expectedCode {
+		t.Error(testName + ", err.Code = " + strconv.Itoa(baseServiceError.Code) + " not match, expected = " + strconv.Itoa(expectedCode))
 	}
 }
