@@ -6,8 +6,8 @@ import (
 )
 
 func TestFindPatientByIdNotFound(t *testing.T) {
-	handler := BaseService.NewBaseService("http://server.ibrohim.me:3001")
-	res, err := handler.FindPatientById("000000000000000000000000")
+	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	res, err := service.FindPatientById("000000000000000000000000")
 
 	if err == nil {
 		t.Error("FindPatientById on NotFound err nil")
@@ -24,8 +24,8 @@ func TestFindPatientByIdNotFound(t *testing.T) {
 }
 
 func TestFindPatientByIdFound(t *testing.T) {
-	handler := BaseService.NewBaseService("http://server.ibrohim.me:3001")
-	res, err := handler.FindPatientById("59b651e4fad1c1000179717c")
+	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	res, err := service.FindPatientById("59b651e4fad1c1000179717c")
 
 	if err != nil {
 		t.Error("FindPatientById on Found err not nil")
