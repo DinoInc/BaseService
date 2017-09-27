@@ -12,6 +12,8 @@ import (
 	"github.com/DinoInc/BaseService/domain"
 )
 
+var _ = fmt.Println
+
 type BaseService struct {
 	endpoint string
 }
@@ -82,6 +84,14 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 
 }
 
+type PatientEntry struct {
+	Resources *domain.Patient `json:"resource"`
+}
+
+type SearchResponse struct {
+	Entry []PatientEntry `json:"entry,omitempty"`
+}
+
 // Function to find Patient using HumanName on his/her Patient object
 //
 // Parameters:
@@ -101,16 +111,19 @@ func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err e
 			return nil, NewError(500, err.Error())
 		}
 
-		var objMap map[string]*json.RawMessage
-		json.Unmarshal(body, &objMap)
+		response := &SearchResponse{}
+		json.Unmarshal(body, response)
 
-		_, isEntryExist := objMap["entry"]
-
-		if !isEntryExist {
+		if response.Entry == nil {
 			return []*domain.Patient{}, nil
 		}
 
-		return nil, nil
+		result := []*domain.Patient{}
+		for _, entry := range response.Entry {
+			result = append(result, entry.Resources)
+		}
+
+		return result, nil
 
 	}
 
