@@ -5,18 +5,32 @@ import "strconv"
 import "reflect"
 import "github.com/DinoInc/BaseService"
 
+var ReflectNullable = []reflect.Kind{
+	reflect.Chan,
+	reflect.Func,
+	reflect.Interface,
+	reflect.Map,
+	reflect.Ptr,
+	reflect.Slice,
+}
+
+func IsNullable(input reflect.Kind) bool {
+	kind := input
+
+	for _, nullableKind := range ReflectNullable {
+		if kind == nullableKind {
+			return true
+		}
+	}
+
+	return false
+}
+
 // reference: https://github.com/stretchr/testify
 func IsNil(input interface{}) bool {
 
-	if input == nil {
-		return true
-	}
-
 	value := reflect.ValueOf(input)
-	kind := value.Kind()
-
-	// Is a [Chan, Func, Interface, Map, Ptr, Slice] and (reflect.Value).IsNil()
-	return (kind >= reflect.Chan && kind <= reflect.Slice) && value.IsNil()
+	return input == nil || (IsNullable(value.Kind()) && value.IsNil())
 
 }
 
