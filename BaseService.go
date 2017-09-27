@@ -59,7 +59,7 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 	res, err := http.Get(s.endpoint + "/Patient/" + id)
 
 	if err != nil {
-		return nil, err
+		return nil, NewError(500, err.Error())
 	}
 
 	if res.StatusCode == 200 {
