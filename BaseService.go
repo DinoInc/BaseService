@@ -2,6 +2,7 @@ package BaseService
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -67,7 +68,7 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 		body, err := ioutil.ReadAll(res.Body)
 
 		if err != nil {
-			return nil, err
+			return nil, NewError(500, err.Error())
 		}
 
 		var patient domain.Patient
@@ -86,5 +87,32 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 // Parameters:
 //  - Name
 func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err error) {
+	res, err := http.Get(s.endpoint + "/Patient?name=" + name)
+
+	if err != nil {
+		return nil, NewError(500, err.Error())
+	}
+
+	if res.StatusCode == 200 {
+
+		body, err := ioutil.ReadAll(res.Body)
+
+		if err != nil {
+			return nil, NewError(500, err.Error())
+		}
+
+		var objMap map[string]*json.RawMessage
+		json.Unmarshal(body, &objMap)
+
+		_, isEntryExist := objMap["entry"]
+
+		if !isEntryExist {
+			return []*domain.Patient{}, nil
+		}
+
+		return nil, nil
+
+	}
+
 	return nil, nil
 }
