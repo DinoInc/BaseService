@@ -114,11 +114,12 @@ func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err e
 		response := &SearchResponse{}
 		json.Unmarshal(body, response)
 
+		result := []*domain.Patient{}
+
 		if response.Entry == nil {
-			return []*domain.Patient{}, nil
+			return result, nil
 		}
 
-		result := []*domain.Patient{}
 		for _, entry := range response.Entry {
 			result = append(result, entry.Resources)
 		}
