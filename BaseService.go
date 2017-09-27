@@ -2,6 +2,7 @@ package BaseService
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -10,6 +11,8 @@ import (
 	"github.com/DinoInc/BaseService/contract"
 	"github.com/DinoInc/BaseService/domain"
 )
+
+var _ = fmt.Println
 
 type BaseService struct {
 	endpoint string
@@ -67,7 +70,7 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 		body, err := ioutil.ReadAll(res.Body)
 
 		if err != nil {
-			return nil, err
+			return nil, NewError(500, err.Error())
 		}
 
 		var patient domain.Patient
@@ -81,10 +84,48 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 
 }
 
+type PatientEntry struct {
+	Resources *domain.Patient `json:"resource"`
+}
+
+type SearchResponse struct {
+	Entry []PatientEntry `json:"entry,omitempty"`
+}
+
 // Function to find Patient using HumanName on his/her Patient object
 //
 // Parameters:
 //  - Name
 func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err error) {
+	res, err := http.Get(s.endpoint + "/Patient?name=" + name)
+
+	if err != nil {
+		return nil, NewError(500, err.Error())
+	}
+
+	if res.StatusCode == 200 {
+
+		body, err := ioutil.ReadAll(res.Body)
+
+		if err != nil {
+			return nil, NewError(500, err.Error())
+		}
+
+		response := &SearchResponse{}
+		json.Unmarshal(body, response)
+
+		if response.Entry == nil {
+			return []*domain.Patient{}, nil
+		}
+
+		result := []*domain.Patient{}
+		for _, entry := range response.Entry {
+			result = append(result, entry.Resources)
+		}
+
+		return result, nil
+
+	}
+
 	return nil, nil
 }
