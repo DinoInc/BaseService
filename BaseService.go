@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 import (
@@ -97,7 +98,9 @@ type SearchResponse struct {
 // Parameters:
 //  - Name
 func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err error) {
-	res, err := http.Get(s.endpoint + "/Patient?name=" + name)
+
+	searchParam := strings.Replace(name, " ", ",", -1)
+	res, err := http.Get(s.endpoint + "/Patient?name=" + searchParam)
 
 	if err != nil {
 		return nil, NewError(500, err.Error())
