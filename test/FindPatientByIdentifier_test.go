@@ -91,18 +91,6 @@ func TestFindPatientByIdentifierSystem(t *testing.T) {
 
 	res, err := service.FindPatientByIdentifier(identifier)
 
-	AssertNil(t, "FindPatientByIdentifier on Exact", "err", err)
-	AssertNotNil(t, "FindPatientByIdentifier on Exact", "res", res)
-
-	var found = false
-	var i = 0
-
-	for !found && i < len(res) {
-		found = (*(res[i].ID) == "59b651e4fad1c1000179717c")
-		i++
-	}
-
-	if !found {
-		t.Error("FindPatientByIdentifier on Exact, expected res.ID is not found")
-	}
+	AssertNil(t, "FindPatientByIdentifier on System", "err", err)
+	AssertNil(t, "FindPatientByIdentifier on System", "res", res)
 }
