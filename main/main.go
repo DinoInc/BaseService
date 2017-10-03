@@ -20,11 +20,10 @@ package main
  */
 
 import (
-	"github.com/DinoInc/BaseService"
-
 	"flag"
 	"fmt"
 	"git.apache.org/thrift.git/lib/go/thrift"
+	"github.com/DinoInc/BaseService"
 	"os"
 )
 
