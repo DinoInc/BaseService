@@ -91,6 +91,6 @@ func TestFindPatientByIdentifierSystem(t *testing.T) {
 
 	res, err := service.FindPatientByIdentifier(identifier)
 
-	AssertNil(t, "FindPatientByIdentifier on System", "err", err)
+	AssertNotNil(t, "FindPatientByIdentifier on System", "err", err)
 	AssertNil(t, "FindPatientByIdentifier on System", "res", res)
 }

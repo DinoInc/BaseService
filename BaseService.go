@@ -36,7 +36,7 @@ func readPatientBundle(responseBody io.Reader) ([]*domain.Patient, error) {
 	body, err := ioutil.ReadAll(responseBody)
 
 	if err != nil {
-		return nil, NewError(500, err.Error())
+		return nil, NewError(500, "FHIR server send not readable response body")
 	}
 
 	bundle := &ResourceBundle{}
@@ -64,7 +64,7 @@ func readPatient(responseBody io.Reader) (*domain.Patient, error) {
 	body, err := ioutil.ReadAll(responseBody)
 
 	if err != nil {
-		return nil, NewError(500, err.Error())
+		return nil, NewError(500, "FHIR server send not readable response body")
 	}
 
 	var patient domain.Patient
@@ -103,26 +103,26 @@ func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain
 //  - Identifier
 func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) ([]*domain.Patient, error) {
 
-	if identifier.Value != nil {
-
-		searchParam := *identifier.Value
-		if identifier.System != nil {
-			searchParam = *identifier.System + "|" + *identifier.Value
-		}
-
-		res, err := http.Get(s.endpoint + "/Patient/?identifier=" + searchParam)
-
-		if err != nil {
-			return nil, NewError(500, err.Error())
-		}
-
-		if res.StatusCode == 200 {
-			return readPatientBundle(res.Body)
-		}
-
+	var searchParam string
+	if identifier.Value != nil && identifier.System != nil {
+		searchParam = *identifier.System + "|" + *identifier.Value
+	} else if identifier.Value != nil {
+		searchParam = *identifier.Value
+	} else {
+		return nil, NewError(400, "FindPatientByIdentifier must have identifier.Value")
 	}
 
-	return nil, nil
+	res, err := http.Get(s.endpoint + "/Patient/?identifier=" + searchParam)
+
+	if err != nil {
+		return nil, NewError(408, "FHIR Request time out.")
+	}
+
+	if res.StatusCode == 200 {
+		return readPatientBundle(res.Body)
+	}
+
+	return nil, NewError(res.StatusCode, "")
 
 }
 
@@ -134,7 +134,7 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 	res, err := http.Get(s.endpoint + "/Patient/" + id)
 
 	if err != nil {
-		return nil, NewError(500, err.Error())
+		return nil, NewError(408, "FHIR Request time out.")
 	}
 
 	if res.StatusCode == 200 {
@@ -155,12 +155,12 @@ func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err e
 	res, err := http.Get(s.endpoint + "/Patient?name=" + searchParam)
 
 	if err != nil {
-		return nil, NewError(500, err.Error())
+		return nil, NewError(408, "FHIR Request time out.")
 	}
 
 	if res.StatusCode == 200 {
 		return readPatientBundle(res.Body)
 	}
 
-	return nil, nil
+	return nil, NewError(res.StatusCode, "")
 }
