@@ -5,6 +5,7 @@ import "strconv"
 import "reflect"
 import "github.com/DinoInc/BaseService"
 
+
 var ReflectNullable = []reflect.Kind{
 	reflect.Chan,
 	reflect.Func,
@@ -15,6 +16,7 @@ var ReflectNullable = []reflect.Kind{
 }
 
 func IsNullable(input reflect.Kind) bool {
+
 	kind := input
 
 	for _, nullableKind := range ReflectNullable {
@@ -31,7 +33,6 @@ func IsNil(input interface{}) bool {
 
 	value := reflect.ValueOf(input)
 	return input == nil || (IsNullable(value.Kind()) && value.IsNil())
-
 }
 
 func AssertNil(t *testing.T, testName string, varName string, input interface{}) {
@@ -50,6 +51,7 @@ func AssertNotNil(t *testing.T, testName string, varName string, input interface
 }
 
 func AssertCode(t *testing.T, testName string, err error, expectedCode int) {
+	
 	baseServiceError, isBaseServiceError := err.(BaseService.Error)
 
 	if !isBaseServiceError {
