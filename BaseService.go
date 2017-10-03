@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strings"
 )
-
 import (
 	"github.com/DinoInc/BaseService/contract"
 	"github.com/DinoInc/BaseService/domain"
@@ -52,7 +51,46 @@ func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain
 // Parameters:
 //  - Identifier
 func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) (r []*domain.Patient, err error) {
+
+	if identifier.Value != nil {
+
+		searchParam := *identifier.Value
+
+		res, err := http.Get(s.endpoint + "/Patient/?identifier=" + searchParam)
+
+		if err != nil {
+			return nil, NewError(500, err.Error())
+		}
+
+		if res.StatusCode == 200 {
+
+			body, err := ioutil.ReadAll(res.Body)
+
+			if err != nil {
+				return nil, NewError(500, err.Error())
+			}
+
+			response := &SearchResponse{}
+			json.Unmarshal(body, response)
+
+			result := []*domain.Patient{}
+
+			if response.Entry == nil {
+				return result, nil
+			}
+
+			for _, entry := range response.Entry {
+				result = append(result, entry.Resources)
+			}
+
+			return result, nil
+
+		}
+
+	}
+
 	return nil, nil
+
 }
 
 // Function to find Patient using id on his/her Patient object
