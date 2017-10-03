@@ -42,7 +42,7 @@ func NewBaseService(endpoint string) *BaseService {
 //  - BirthDate
 //  - Address
 //  - IssueMR
-func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender *domain.AdministrativeGender, birthDate int32, address []*domain.Address, issueMR bool) (r *contract.ReturnType, err error) {
+func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender domain.EnumPatientGender, birthDate int32, address []*domain.Address, issueMR bool) (r *contract.ReturnType, err error) {
 	return nil, nil
 }
 

@@ -15,9 +15,18 @@ if [ "$current_version" != "Thrift version $THRIFT_VERSION" ]; then
 	exit 1
 fi
 
-thrift --gen go thrift/domain.thrift >/dev/null 2>&1
+cd model
+./inflator -schema-dir=./schemas/ -schema-root=Patient -namespace=domain
+if (($? != 0)); then
+	echo "Fail to inflate thrift file."
+	exit 1
+fi
+cd ..
+
+
+thrift --gen go model/domain.thrift
 gen_domain=$?
-thrift --gen go thrift/contract.thrift >/dev/null 2>&1
+thrift --gen go model/contract.thrift
 gen_contract=$?
 
 if ((gen_domain == 0)) && ((gen_contract == 0)); then
@@ -28,11 +37,14 @@ if ((gen_domain == 0)) && ((gen_contract == 0)); then
 	mv gen-go/* .
 
 	sed -i "s/\"domain\"/\"$REPO\/domain\"/g" contract/*.go
-	sed -i -f thrift/reserved_word.sed domain/*.go
+	sed -i -f model/domain.sed domain/*.go
 
 else
 
 	echo "Thrift fail to generate source."
+	rm -rf gen-go
+	
+	exit 1
 
 fi
 

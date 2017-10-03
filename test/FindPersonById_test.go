@@ -20,7 +20,7 @@ func TestFindPatientByIdFound(t *testing.T) {
 	AssertNil(t, "FindPatientById on Found", "err", err)
 	AssertNotNil(t, "FindPatientById on Found", "res", res)
 
-	if *(res.ID) != "59b651e4fad1c1000179717c" {
+	if res != nil && *(res.ID) != "59b651e4fad1c1000179717c" {
 		t.Error("FindPatientById on Found res.ID is not equal")
 	}
 }

@@ -280,7 +280,7 @@ type BaseService interface {
   //  - BirthDate
   //  - Address
   //  - IssueMR
-  AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender *domain.AdministrativeGender, birthDate int32, address []*domain.Address, issueMR bool) (r *ReturnType, err error)
+  AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender domain.EnumPatientGender, birthDate int32, address []*domain.Address, issueMR bool) (r *ReturnType, err error)
   // Function to find Patient using identifier on his/her linked Person object
   // 
   // Parameters:
@@ -344,12 +344,12 @@ func NewBaseServiceClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, o
 //  - BirthDate
 //  - Address
 //  - IssueMR
-func (p *BaseServiceClient) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender *domain.AdministrativeGender, birthDate int32, address []*domain.Address, issueMR bool) (r *ReturnType, err error) {
+func (p *BaseServiceClient) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender domain.EnumPatientGender, birthDate int32, address []*domain.Address, issueMR bool) (r *ReturnType, err error) {
   if err = p.sendAddPatient(identifier, name, contact, gender, birthDate, address, issueMR); err != nil { return }
   return p.recvAddPatient()
 }
 
-func (p *BaseServiceClient) sendAddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender *domain.AdministrativeGender, birthDate int32, address []*domain.Address, issueMR bool)(err error) {
+func (p *BaseServiceClient) sendAddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender domain.EnumPatientGender, birthDate int32, address []*domain.Address, issueMR bool)(err error) {
   oprot := p.OutputProtocol
   if oprot == nil {
     oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -911,7 +911,7 @@ type BaseServiceAddPatientArgs struct {
   Identifier []*domain.Identifier `thrift:"identifier,1,required" db:"identifier" json:"identifier"`
   Name []*domain.HumanName `thrift:"name,2" db:"name" json:"name"`
   Contact []*domain.ContactPoint `thrift:"contact,3" db:"contact" json:"contact"`
-  Gender *domain.AdministrativeGender `thrift:"gender,4" db:"gender" json:"gender"`
+  Gender domain.EnumPatientGender `thrift:"gender,4" db:"gender" json:"gender"`
   BirthDate int32 `thrift:"birthDate,5" db:"birthDate" json:"birthDate"`
   Address []*domain.Address `thrift:"address,6" db:"address" json:"address"`
   IssueMR bool `thrift:"issueMR,7,required" db:"issueMR" json:"issueMR"`
@@ -933,12 +933,9 @@ func (p *BaseServiceAddPatientArgs) GetName() []*domain.HumanName {
 func (p *BaseServiceAddPatientArgs) GetContact() []*domain.ContactPoint {
   return p.Contact
 }
-var BaseServiceAddPatientArgs_Gender_DEFAULT *domain.AdministrativeGender
-func (p *BaseServiceAddPatientArgs) GetGender() *domain.AdministrativeGender {
-  if !p.IsSetGender() {
-    return BaseServiceAddPatientArgs_Gender_DEFAULT
-  }
-return p.Gender
+
+func (p *BaseServiceAddPatientArgs) GetGender() domain.EnumPatientGender {
+  return p.Gender
 }
 
 func (p *BaseServiceAddPatientArgs) GetBirthDate() int32 {
@@ -952,10 +949,6 @@ func (p *BaseServiceAddPatientArgs) GetAddress() []*domain.Address {
 func (p *BaseServiceAddPatientArgs) GetIssueMR() bool {
   return p.IssueMR
 }
-func (p *BaseServiceAddPatientArgs) IsSetGender() bool {
-  return p.Gender != nil
-}
-
 func (p *BaseServiceAddPatientArgs) Read(iprot thrift.TProtocol) error {
   if _, err := iprot.ReadStructBegin(); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
@@ -1083,10 +1076,12 @@ func (p *BaseServiceAddPatientArgs)  ReadField3(iprot thrift.TProtocol) error {
 }
 
 func (p *BaseServiceAddPatientArgs)  ReadField4(iprot thrift.TProtocol) error {
-  p.Gender = &domain.AdministrativeGender{}
-  if err := p.Gender.Read(iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Gender), err)
-  }
+  if v, err := iprot.ReadI32(); err != nil {
+  return thrift.PrependError("error reading field 4: ", err)
+} else {
+  temp := domain.EnumPatientGender(v)
+  p.Gender = temp
+}
   return nil
 }
 
@@ -1205,11 +1200,10 @@ func (p *BaseServiceAddPatientArgs) writeField3(oprot thrift.TProtocol) (err err
 }
 
 func (p *BaseServiceAddPatientArgs) writeField4(oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin("gender", thrift.STRUCT, 4); err != nil {
+  if err := oprot.WriteFieldBegin("gender", thrift.I32, 4); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:gender: ", p), err) }
-  if err := p.Gender.Write(oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Gender), err)
-  }
+  if err := oprot.WriteI32(int32(p.Gender)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.gender (4) field write error: ", p), err) }
   if err := oprot.WriteFieldEnd(); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T write field end error 4:gender: ", p), err) }
   return err

@@ -30,7 +30,7 @@ service BaseService {
 		1 : required list<domain.Identifier> identifier,
 		2 : list<domain.HumanName> name,
 		3 : list<domain.ContactPoint> contact,
-		4 : domain.AdministrativeGender gender,
+		4 : domain.enumPatientGender gender,
 		5 : i32 birthDate,
 		6 : list<domain.Address> address,
 		7 : required bool issueMR,
