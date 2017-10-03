@@ -1,21 +1,21 @@
 package test
 
 import (
-	"testing"
-	"github.com/DinoInc/BaseService/domain"
 	"github.com/DinoInc/BaseService"
+	"github.com/DinoInc/BaseService/domain"
+	"testing"
 )
 
 func TestFindPatientByIdentifierNotFound(t *testing.T) {
 
 	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
 	identifier := domain.NewIdentifier()
-	identifier.System = domain.NewURI()
-  	identifier.System.Value = domain.NewUnspecifiedType()
-  	identifier.System.Value.BaseObjectType = "urn:oid:0.0.00.000.000.000.0.0"
-  	identifierValue := "12345"
-  	identifier.Value = &identifierValue
-	
+
+	identifier.System = new(string)
+	*identifier.System = "urn:oid:0.0.00.000.000.000.0.0"
+	identifier.Value = new(string)
+	*identifier.Value = "12345"
+
 	res, err := service.FindPatientByIdentifier(identifier)
 
 	AssertNil(t, "FindPatientByIdentifier on NotFound", "err", err)
@@ -32,13 +32,11 @@ func TestFindPatientByIdentifierFound(t *testing.T) {
 	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
 	identifier := domain.NewIdentifier()
 
-	identifier.System = domain.NewURI()
-  	identifier.System.Value = domain.NewUnspecifiedType()
-  	identifier.System.Value.BaseObjectType = "urn:oid:1.2.36.146.595.217.0.1"
+	identifier.System = new(string)
+	*identifier.System = "urn:oid:1.2.36.146.595.217.0.1"
+	identifier.Value = new(string)
+	*identifier.Value = "12345"
 
-  	identifierValue := "12345"
-  	identifier.Value = &identifierValue
-  	
 	res, err := service.FindPatientByIdentifier(identifier)
 
 	AssertNil(t, "FindPatientByIdentifier on Similar", "err", err)
@@ -62,8 +60,8 @@ func TestFindPatientByIdentifierValue(t *testing.T) {
 	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
 	identifier := domain.NewIdentifier()
 
-  	identifierValue := "12345"
-  	identifier.Value = &identifierValue
+	identifier.Value = new(string)
+	*identifier.Value = "12345"
 
 	res, err := service.FindPatientByIdentifier(identifier)
 
@@ -87,10 +85,9 @@ func TestFindPatientByIdentifierSystem(t *testing.T) {
 
 	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
 	identifier := domain.NewIdentifier()
-	
-  	identifier.System = domain.NewURI()
-  	identifier.System.Value = domain.NewUnspecifiedType()
-  	identifier.System.Value.BaseObjectType = "urn:oid:1.2.36.146.595.217.0.1"
+
+	identifier.System = new(string)
+	*identifier.System = "urn:oid:1.2.36.146.595.217.0.1"
 
 	res, err := service.FindPatientByIdentifier(identifier)
 
