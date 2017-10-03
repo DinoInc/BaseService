@@ -55,6 +55,9 @@ func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) (r 
 	if identifier.Value != nil {
 
 		searchParam := *identifier.Value
+		if identifier.System != nil {
+			searchParam = *identifier.System + "|" + searchParam
+		}
 
 		res, err := http.Get(s.endpoint + "/Patient/?identifier=" + searchParam)
 
