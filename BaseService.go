@@ -3,6 +3,7 @@ package BaseService
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -18,8 +19,58 @@ type BaseService struct {
 	endpoint string
 }
 
+type PatientEntry struct {
+	Resources *domain.Patient `json:"resource"`
+}
+
+type ResourceBundle struct {
+	Entry []*json.RawMessage `json:"entry,omitempty"`
+}
+
 func NewBaseService(endpoint string) *BaseService {
 	return &BaseService{endpoint: endpoint}
+}
+
+func readPatientBundle(responseBody io.Reader) ([]*domain.Patient, error) {
+
+	body, err := ioutil.ReadAll(responseBody)
+
+	if err != nil {
+		return nil, NewError(500, err.Error())
+	}
+
+	bundle := &ResourceBundle{}
+	json.Unmarshal(body, bundle)
+
+	result := []*domain.Patient{}
+
+	if bundle.Entry == nil {
+		return result, nil
+	}
+
+	for _, entry := range bundle.Entry {
+
+		patientEntry := &PatientEntry{}
+		json.Unmarshal(*entry, patientEntry)
+
+		result = append(result, patientEntry.Resources)
+
+	}
+
+	return result, nil
+}
+
+func readPatient(responseBody io.Reader) (*domain.Patient, error) {
+	body, err := ioutil.ReadAll(responseBody)
+
+	if err != nil {
+		return nil, NewError(500, err.Error())
+	}
+
+	var patient domain.Patient
+	json.Unmarshal(body, &patient)
+
+	return &patient, nil
 }
 
 //
@@ -42,7 +93,7 @@ func NewBaseService(endpoint string) *BaseService {
 //  - BirthDate
 //  - Address
 //  - IssueMR
-func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender domain.EnumPatientGender, birthDate int32, address []*domain.Address, issueMR bool) (r *contract.ReturnType, err error) {
+func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender domain.EnumPatientGender, birthDate int32, address []*domain.Address, issueMR bool) (*contract.ReturnType, error) {
 	return nil, nil
 }
 
@@ -50,13 +101,13 @@ func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain
 //
 // Parameters:
 //  - Identifier
-func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) (r []*domain.Patient, err error) {
+func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) ([]*domain.Patient, error) {
 
 	if identifier.Value != nil {
 
 		searchParam := *identifier.Value
 		if identifier.System != nil {
-			searchParam = *identifier.System + "|" + searchParam
+			searchParam = *identifier.System + "|" + *identifier.Value
 		}
 
 		res, err := http.Get(s.endpoint + "/Patient/?identifier=" + searchParam)
@@ -66,28 +117,7 @@ func (s *BaseService) FindPatientByIdentifier(identifier *domain.Identifier) (r 
 		}
 
 		if res.StatusCode == 200 {
-
-			body, err := ioutil.ReadAll(res.Body)
-
-			if err != nil {
-				return nil, NewError(500, err.Error())
-			}
-
-			response := &SearchResponse{}
-			json.Unmarshal(body, response)
-
-			result := []*domain.Patient{}
-
-			if response.Entry == nil {
-				return result, nil
-			}
-
-			for _, entry := range response.Entry {
-				result = append(result, entry.Resources)
-			}
-
-			return result, nil
-
+			return readPatientBundle(res.Body)
 		}
 
 	}
@@ -108,30 +138,11 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 	}
 
 	if res.StatusCode == 200 {
-
-		body, err := ioutil.ReadAll(res.Body)
-
-		if err != nil {
-			return nil, NewError(500, err.Error())
-		}
-
-		var patient domain.Patient
-		json.Unmarshal(body, &patient)
-
-		return &patient, nil
-
+		return readPatient(res.Body)
 	}
 
 	return nil, NewError(res.StatusCode, "")
 
-}
-
-type PatientEntry struct {
-	Resources *domain.Patient `json:"resource"`
-}
-
-type SearchResponse struct {
-	Entry []PatientEntry `json:"entry,omitempty"`
 }
 
 // Function to find Patient using HumanName on his/her Patient object
@@ -148,28 +159,7 @@ func (s *BaseService) FindPatientByName(name string) (r []*domain.Patient, err e
 	}
 
 	if res.StatusCode == 200 {
-
-		body, err := ioutil.ReadAll(res.Body)
-
-		if err != nil {
-			return nil, NewError(500, err.Error())
-		}
-
-		response := &SearchResponse{}
-		json.Unmarshal(body, response)
-
-		result := []*domain.Patient{}
-
-		if response.Entry == nil {
-			return result, nil
-		}
-
-		for _, entry := range response.Entry {
-			result = append(result, entry.Resources)
-		}
-
-		return result, nil
-
+		return readPatientBundle(res.Body)
 	}
 
 	return nil, nil
