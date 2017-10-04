@@ -59,4 +59,28 @@ service BaseService {
 	list<domain.Patient> FindPatientByName (
 		1 : required string name,
 	)  
+
+	/**
+	 * Function to find Patient using identifier of Person object
+	 */
+
+	list<domain.Person> FindPersonByIdentifier (
+		1 : required domain.Identifier identifier,
+	)
+
+	/**
+	 * Function to find Person using id on his/her Person object
+	 */
+
+	domain.Person FindPersonById (
+		1 : required string id,
+	)
+
+	/**
+	 * Function to find Person using HumanName on his/her Person object
+	 */
+
+	list<domain.Person> FindPersonByName (
+		1 : required string name,
+	)  
 }

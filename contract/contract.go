@@ -296,6 +296,21 @@ type BaseService interface {
   // Parameters:
   //  - Name
   FindPatientByName(name string) (r []*domain.Patient, err error)
+  // Function to find Patient using identifier of Person object
+  // 
+  // Parameters:
+  //  - Identifier
+  FindPersonByIdentifier(identifier *domain.Identifier) (r []*domain.Person, err error)
+  // Function to find Person using id on his/her Person object
+  // 
+  // Parameters:
+  //  - ID
+  FindPersonById(id string) (r *domain.Person, err error)
+  // Function to find Person using HumanName on his/her Person object
+  // 
+  // Parameters:
+  //  - Name
+  FindPersonByName(name string) (r []*domain.Person, err error)
 }
 
 type BaseServiceClient struct {
@@ -658,6 +673,240 @@ func (p *BaseServiceClient) recvFindPatientByName() (value []*domain.Patient, er
   return
 }
 
+// Function to find Patient using identifier of Person object
+// 
+// Parameters:
+//  - Identifier
+func (p *BaseServiceClient) FindPersonByIdentifier(identifier *domain.Identifier) (r []*domain.Person, err error) {
+  if err = p.sendFindPersonByIdentifier(identifier); err != nil { return }
+  return p.recvFindPersonByIdentifier()
+}
+
+func (p *BaseServiceClient) sendFindPersonByIdentifier(identifier *domain.Identifier)(err error) {
+  oprot := p.OutputProtocol
+  if oprot == nil {
+    oprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.OutputProtocol = oprot
+  }
+  p.SeqId++
+  if err = oprot.WriteMessageBegin("FindPersonByIdentifier", thrift.CALL, p.SeqId); err != nil {
+      return
+  }
+  args := BaseServiceFindPersonByIdentifierArgs{
+  Identifier : identifier,
+  }
+  if err = args.Write(oprot); err != nil {
+      return
+  }
+  if err = oprot.WriteMessageEnd(); err != nil {
+      return
+  }
+  return oprot.Flush()
+}
+
+
+func (p *BaseServiceClient) recvFindPersonByIdentifier() (value []*domain.Person, err error) {
+  iprot := p.InputProtocol
+  if iprot == nil {
+    iprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.InputProtocol = iprot
+  }
+  method, mTypeId, seqId, err := iprot.ReadMessageBegin()
+  if err != nil {
+    return
+  }
+  if method != "FindPersonByIdentifier" {
+    err = thrift.NewTApplicationException(thrift.WRONG_METHOD_NAME, "FindPersonByIdentifier failed: wrong method name")
+    return
+  }
+  if p.SeqId != seqId {
+    err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "FindPersonByIdentifier failed: out of sequence response")
+    return
+  }
+  if mTypeId == thrift.EXCEPTION {
+    error8 := thrift.NewTApplicationException(thrift.UNKNOWN_APPLICATION_EXCEPTION, "Unknown Exception")
+    var error9 error
+    error9, err = error8.Read(iprot)
+    if err != nil {
+      return
+    }
+    if err = iprot.ReadMessageEnd(); err != nil {
+      return
+    }
+    err = error9
+    return
+  }
+  if mTypeId != thrift.REPLY {
+    err = thrift.NewTApplicationException(thrift.INVALID_MESSAGE_TYPE_EXCEPTION, "FindPersonByIdentifier failed: invalid message type")
+    return
+  }
+  result := BaseServiceFindPersonByIdentifierResult{}
+  if err = result.Read(iprot); err != nil {
+    return
+  }
+  if err = iprot.ReadMessageEnd(); err != nil {
+    return
+  }
+  value = result.GetSuccess()
+  return
+}
+
+// Function to find Person using id on his/her Person object
+// 
+// Parameters:
+//  - ID
+func (p *BaseServiceClient) FindPersonById(id string) (r *domain.Person, err error) {
+  if err = p.sendFindPersonById(id); err != nil { return }
+  return p.recvFindPersonById()
+}
+
+func (p *BaseServiceClient) sendFindPersonById(id string)(err error) {
+  oprot := p.OutputProtocol
+  if oprot == nil {
+    oprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.OutputProtocol = oprot
+  }
+  p.SeqId++
+  if err = oprot.WriteMessageBegin("FindPersonById", thrift.CALL, p.SeqId); err != nil {
+      return
+  }
+  args := BaseServiceFindPersonByIdArgs{
+  ID : id,
+  }
+  if err = args.Write(oprot); err != nil {
+      return
+  }
+  if err = oprot.WriteMessageEnd(); err != nil {
+      return
+  }
+  return oprot.Flush()
+}
+
+
+func (p *BaseServiceClient) recvFindPersonById() (value *domain.Person, err error) {
+  iprot := p.InputProtocol
+  if iprot == nil {
+    iprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.InputProtocol = iprot
+  }
+  method, mTypeId, seqId, err := iprot.ReadMessageBegin()
+  if err != nil {
+    return
+  }
+  if method != "FindPersonById" {
+    err = thrift.NewTApplicationException(thrift.WRONG_METHOD_NAME, "FindPersonById failed: wrong method name")
+    return
+  }
+  if p.SeqId != seqId {
+    err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "FindPersonById failed: out of sequence response")
+    return
+  }
+  if mTypeId == thrift.EXCEPTION {
+    error10 := thrift.NewTApplicationException(thrift.UNKNOWN_APPLICATION_EXCEPTION, "Unknown Exception")
+    var error11 error
+    error11, err = error10.Read(iprot)
+    if err != nil {
+      return
+    }
+    if err = iprot.ReadMessageEnd(); err != nil {
+      return
+    }
+    err = error11
+    return
+  }
+  if mTypeId != thrift.REPLY {
+    err = thrift.NewTApplicationException(thrift.INVALID_MESSAGE_TYPE_EXCEPTION, "FindPersonById failed: invalid message type")
+    return
+  }
+  result := BaseServiceFindPersonByIdResult{}
+  if err = result.Read(iprot); err != nil {
+    return
+  }
+  if err = iprot.ReadMessageEnd(); err != nil {
+    return
+  }
+  value = result.GetSuccess()
+  return
+}
+
+// Function to find Person using HumanName on his/her Person object
+// 
+// Parameters:
+//  - Name
+func (p *BaseServiceClient) FindPersonByName(name string) (r []*domain.Person, err error) {
+  if err = p.sendFindPersonByName(name); err != nil { return }
+  return p.recvFindPersonByName()
+}
+
+func (p *BaseServiceClient) sendFindPersonByName(name string)(err error) {
+  oprot := p.OutputProtocol
+  if oprot == nil {
+    oprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.OutputProtocol = oprot
+  }
+  p.SeqId++
+  if err = oprot.WriteMessageBegin("FindPersonByName", thrift.CALL, p.SeqId); err != nil {
+      return
+  }
+  args := BaseServiceFindPersonByNameArgs{
+  Name : name,
+  }
+  if err = args.Write(oprot); err != nil {
+      return
+  }
+  if err = oprot.WriteMessageEnd(); err != nil {
+      return
+  }
+  return oprot.Flush()
+}
+
+
+func (p *BaseServiceClient) recvFindPersonByName() (value []*domain.Person, err error) {
+  iprot := p.InputProtocol
+  if iprot == nil {
+    iprot = p.ProtocolFactory.GetProtocol(p.Transport)
+    p.InputProtocol = iprot
+  }
+  method, mTypeId, seqId, err := iprot.ReadMessageBegin()
+  if err != nil {
+    return
+  }
+  if method != "FindPersonByName" {
+    err = thrift.NewTApplicationException(thrift.WRONG_METHOD_NAME, "FindPersonByName failed: wrong method name")
+    return
+  }
+  if p.SeqId != seqId {
+    err = thrift.NewTApplicationException(thrift.BAD_SEQUENCE_ID, "FindPersonByName failed: out of sequence response")
+    return
+  }
+  if mTypeId == thrift.EXCEPTION {
+    error12 := thrift.NewTApplicationException(thrift.UNKNOWN_APPLICATION_EXCEPTION, "Unknown Exception")
+    var error13 error
+    error13, err = error12.Read(iprot)
+    if err != nil {
+      return
+    }
+    if err = iprot.ReadMessageEnd(); err != nil {
+      return
+    }
+    err = error13
+    return
+  }
+  if mTypeId != thrift.REPLY {
+    err = thrift.NewTApplicationException(thrift.INVALID_MESSAGE_TYPE_EXCEPTION, "FindPersonByName failed: invalid message type")
+    return
+  }
+  result := BaseServiceFindPersonByNameResult{}
+  if err = result.Read(iprot); err != nil {
+    return
+  }
+  if err = iprot.ReadMessageEnd(); err != nil {
+    return
+  }
+  value = result.GetSuccess()
+  return
+}
+
 
 type BaseServiceProcessor struct {
   processorMap map[string]thrift.TProcessorFunction
@@ -679,12 +928,15 @@ func (p *BaseServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFuncti
 
 func NewBaseServiceProcessor(handler BaseService) *BaseServiceProcessor {
 
-  self8 := &BaseServiceProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
-  self8.processorMap["AddPatient"] = &baseServiceProcessorAddPatient{handler:handler}
-  self8.processorMap["FindPatientByIdentifier"] = &baseServiceProcessorFindPatientByIdentifier{handler:handler}
-  self8.processorMap["FindPatientById"] = &baseServiceProcessorFindPatientById{handler:handler}
-  self8.processorMap["FindPatientByName"] = &baseServiceProcessorFindPatientByName{handler:handler}
-return self8
+  self14 := &BaseServiceProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
+  self14.processorMap["AddPatient"] = &baseServiceProcessorAddPatient{handler:handler}
+  self14.processorMap["FindPatientByIdentifier"] = &baseServiceProcessorFindPatientByIdentifier{handler:handler}
+  self14.processorMap["FindPatientById"] = &baseServiceProcessorFindPatientById{handler:handler}
+  self14.processorMap["FindPatientByName"] = &baseServiceProcessorFindPatientByName{handler:handler}
+  self14.processorMap["FindPersonByIdentifier"] = &baseServiceProcessorFindPersonByIdentifier{handler:handler}
+  self14.processorMap["FindPersonById"] = &baseServiceProcessorFindPersonById{handler:handler}
+  self14.processorMap["FindPersonByName"] = &baseServiceProcessorFindPersonByName{handler:handler}
+return self14
 }
 
 func (p *BaseServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -695,12 +947,12 @@ func (p *BaseServiceProcessor) Process(iprot, oprot thrift.TProtocol) (success b
   }
   iprot.Skip(thrift.STRUCT)
   iprot.ReadMessageEnd()
-  x9 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
+  x15 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
   oprot.WriteMessageBegin(name, thrift.EXCEPTION, seqId)
-  x9.Write(oprot)
+  x15.Write(oprot)
   oprot.WriteMessageEnd()
   oprot.Flush()
-  return false, x9
+  return false, x15
 
 }
 
@@ -896,6 +1148,150 @@ var retval []*domain.Patient
   return true, err
 }
 
+type baseServiceProcessorFindPersonByIdentifier struct {
+  handler BaseService
+}
+
+func (p *baseServiceProcessorFindPersonByIdentifier) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := BaseServiceFindPersonByIdentifierArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("FindPersonByIdentifier", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := BaseServiceFindPersonByIdentifierResult{}
+var retval []*domain.Person
+  var err2 error
+  if retval, err2 = p.handler.FindPersonByIdentifier(args.Identifier); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FindPersonByIdentifier: " + err2.Error())
+    oprot.WriteMessageBegin("FindPersonByIdentifier", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return true, err2
+  } else {
+    result.Success = retval
+}
+  if err2 = oprot.WriteMessageBegin("FindPersonByIdentifier", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
+type baseServiceProcessorFindPersonById struct {
+  handler BaseService
+}
+
+func (p *baseServiceProcessorFindPersonById) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := BaseServiceFindPersonByIdArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("FindPersonById", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := BaseServiceFindPersonByIdResult{}
+var retval *domain.Person
+  var err2 error
+  if retval, err2 = p.handler.FindPersonById(args.ID); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FindPersonById: " + err2.Error())
+    oprot.WriteMessageBegin("FindPersonById", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return true, err2
+  } else {
+    result.Success = retval
+}
+  if err2 = oprot.WriteMessageBegin("FindPersonById", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
+type baseServiceProcessorFindPersonByName struct {
+  handler BaseService
+}
+
+func (p *baseServiceProcessorFindPersonByName) Process(seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+  args := BaseServiceFindPersonByNameArgs{}
+  if err = args.Read(iprot); err != nil {
+    iprot.ReadMessageEnd()
+    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+    oprot.WriteMessageBegin("FindPersonByName", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return false, err
+  }
+
+  iprot.ReadMessageEnd()
+  result := BaseServiceFindPersonByNameResult{}
+var retval []*domain.Person
+  var err2 error
+  if retval, err2 = p.handler.FindPersonByName(args.Name); err2 != nil {
+    x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FindPersonByName: " + err2.Error())
+    oprot.WriteMessageBegin("FindPersonByName", thrift.EXCEPTION, seqId)
+    x.Write(oprot)
+    oprot.WriteMessageEnd()
+    oprot.Flush()
+    return true, err2
+  } else {
+    result.Success = retval
+}
+  if err2 = oprot.WriteMessageBegin("FindPersonByName", thrift.REPLY, seqId); err2 != nil {
+    err = err2
+  }
+  if err2 = result.Write(oprot); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err2 = oprot.Flush(); err == nil && err2 != nil {
+    err = err2
+  }
+  if err != nil {
+    return
+  }
+  return true, err
+}
+
 
 // HELPER FUNCTIONS AND STRUCTURES
 
@@ -1023,11 +1419,11 @@ func (p *BaseServiceAddPatientArgs)  ReadField1(iprot thrift.TProtocol) error {
   tSlice := make([]*domain.Identifier, 0, size)
   p.Identifier =  tSlice
   for i := 0; i < size; i ++ {
-    _elem10 := &domain.Identifier{}
-    if err := _elem10.Read(iprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem10), err)
+    _elem16 := &domain.Identifier{}
+    if err := _elem16.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem16), err)
     }
-    p.Identifier = append(p.Identifier, _elem10)
+    p.Identifier = append(p.Identifier, _elem16)
   }
   if err := iprot.ReadListEnd(); err != nil {
     return thrift.PrependError("error reading list end: ", err)
@@ -1043,11 +1439,11 @@ func (p *BaseServiceAddPatientArgs)  ReadField2(iprot thrift.TProtocol) error {
   tSlice := make([]*domain.HumanName, 0, size)
   p.Name =  tSlice
   for i := 0; i < size; i ++ {
-    _elem11 := &domain.HumanName{}
-    if err := _elem11.Read(iprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem11), err)
+    _elem17 := &domain.HumanName{}
+    if err := _elem17.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem17), err)
     }
-    p.Name = append(p.Name, _elem11)
+    p.Name = append(p.Name, _elem17)
   }
   if err := iprot.ReadListEnd(); err != nil {
     return thrift.PrependError("error reading list end: ", err)
@@ -1063,11 +1459,11 @@ func (p *BaseServiceAddPatientArgs)  ReadField3(iprot thrift.TProtocol) error {
   tSlice := make([]*domain.ContactPoint, 0, size)
   p.Contact =  tSlice
   for i := 0; i < size; i ++ {
-    _elem12 := &domain.ContactPoint{}
-    if err := _elem12.Read(iprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem12), err)
+    _elem18 := &domain.ContactPoint{}
+    if err := _elem18.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem18), err)
     }
-    p.Contact = append(p.Contact, _elem12)
+    p.Contact = append(p.Contact, _elem18)
   }
   if err := iprot.ReadListEnd(); err != nil {
     return thrift.PrependError("error reading list end: ", err)
@@ -1102,11 +1498,11 @@ func (p *BaseServiceAddPatientArgs)  ReadField6(iprot thrift.TProtocol) error {
   tSlice := make([]*domain.Address, 0, size)
   p.Address =  tSlice
   for i := 0; i < size; i ++ {
-    _elem13 := &domain.Address{}
-    if err := _elem13.Read(iprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem13), err)
+    _elem19 := &domain.Address{}
+    if err := _elem19.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem19), err)
     }
-    p.Address = append(p.Address, _elem13)
+    p.Address = append(p.Address, _elem19)
   }
   if err := iprot.ReadListEnd(); err != nil {
     return thrift.PrependError("error reading list end: ", err)
@@ -1505,11 +1901,11 @@ func (p *BaseServiceFindPatientByIdentifierResult)  ReadField0(iprot thrift.TPro
   tSlice := make([]*domain.Patient, 0, size)
   p.Success =  tSlice
   for i := 0; i < size; i ++ {
-    _elem14 := &domain.Patient{}
-    if err := _elem14.Read(iprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem14), err)
+    _elem20 := &domain.Patient{}
+    if err := _elem20.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem20), err)
     }
-    p.Success = append(p.Success, _elem14)
+    p.Success = append(p.Success, _elem20)
   }
   if err := iprot.ReadListEnd(); err != nil {
     return thrift.PrependError("error reading list end: ", err)
@@ -1891,11 +2287,11 @@ func (p *BaseServiceFindPatientByNameResult)  ReadField0(iprot thrift.TProtocol)
   tSlice := make([]*domain.Patient, 0, size)
   p.Success =  tSlice
   for i := 0; i < size; i ++ {
-    _elem15 := &domain.Patient{}
-    if err := _elem15.Read(iprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem15), err)
+    _elem21 := &domain.Patient{}
+    if err := _elem21.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem21), err)
     }
-    p.Success = append(p.Success, _elem15)
+    p.Success = append(p.Success, _elem21)
   }
   if err := iprot.ReadListEnd(); err != nil {
     return thrift.PrependError("error reading list end: ", err)
@@ -1942,6 +2338,601 @@ func (p *BaseServiceFindPatientByNameResult) String() string {
     return "<nil>"
   }
   return fmt.Sprintf("BaseServiceFindPatientByNameResult(%+v)", *p)
+}
+
+// Attributes:
+//  - Identifier
+type BaseServiceFindPersonByIdentifierArgs struct {
+  Identifier *domain.Identifier `thrift:"identifier,1,required" db:"identifier" json:"identifier"`
+}
+
+func NewBaseServiceFindPersonByIdentifierArgs() *BaseServiceFindPersonByIdentifierArgs {
+  return &BaseServiceFindPersonByIdentifierArgs{}
+}
+
+var BaseServiceFindPersonByIdentifierArgs_Identifier_DEFAULT *domain.Identifier
+func (p *BaseServiceFindPersonByIdentifierArgs) GetIdentifier() *domain.Identifier {
+  if !p.IsSetIdentifier() {
+    return BaseServiceFindPersonByIdentifierArgs_Identifier_DEFAULT
+  }
+return p.Identifier
+}
+func (p *BaseServiceFindPersonByIdentifierArgs) IsSetIdentifier() bool {
+  return p.Identifier != nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+  var issetIdentifier bool = false;
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 1:
+      if err := p.ReadField1(iprot); err != nil {
+        return err
+      }
+      issetIdentifier = true
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  if !issetIdentifier{
+    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Identifier is not set"));
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierArgs)  ReadField1(iprot thrift.TProtocol) error {
+  p.Identifier = &domain.Identifier{}
+  if err := p.Identifier.Read(iprot); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Identifier), err)
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("FindPersonByIdentifier_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField1(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierArgs) writeField1(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("identifier", thrift.STRUCT, 1); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:identifier: ", p), err) }
+  if err := p.Identifier.Write(oprot); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Identifier), err)
+  }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:identifier: ", p), err) }
+  return err
+}
+
+func (p *BaseServiceFindPersonByIdentifierArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("BaseServiceFindPersonByIdentifierArgs(%+v)", *p)
+}
+
+// Attributes:
+//  - Success
+type BaseServiceFindPersonByIdentifierResult struct {
+  Success []*domain.Person `thrift:"success,0" db:"success" json:"success,omitempty"`
+}
+
+func NewBaseServiceFindPersonByIdentifierResult() *BaseServiceFindPersonByIdentifierResult {
+  return &BaseServiceFindPersonByIdentifierResult{}
+}
+
+var BaseServiceFindPersonByIdentifierResult_Success_DEFAULT []*domain.Person
+
+func (p *BaseServiceFindPersonByIdentifierResult) GetSuccess() []*domain.Person {
+  return p.Success
+}
+func (p *BaseServiceFindPersonByIdentifierResult) IsSetSuccess() bool {
+  return p.Success != nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 0:
+      if err := p.ReadField0(iprot); err != nil {
+        return err
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierResult)  ReadField0(iprot thrift.TProtocol) error {
+  _, size, err := iprot.ReadListBegin()
+  if err != nil {
+    return thrift.PrependError("error reading list begin: ", err)
+  }
+  tSlice := make([]*domain.Person, 0, size)
+  p.Success =  tSlice
+  for i := 0; i < size; i ++ {
+    _elem22 := &domain.Person{}
+    if err := _elem22.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem22), err)
+    }
+    p.Success = append(p.Success, _elem22)
+  }
+  if err := iprot.ReadListEnd(); err != nil {
+    return thrift.PrependError("error reading list end: ", err)
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("FindPersonByIdentifier_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField0(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdentifierResult) writeField0(oprot thrift.TProtocol) (err error) {
+  if p.IsSetSuccess() {
+    if err := oprot.WriteFieldBegin("success", thrift.LIST, 0); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
+    if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Success)); err != nil {
+      return thrift.PrependError("error writing list begin: ", err)
+    }
+    for _, v := range p.Success {
+      if err := v.Write(oprot); err != nil {
+        return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", v), err)
+      }
+    }
+    if err := oprot.WriteListEnd(); err != nil {
+      return thrift.PrependError("error writing list end: ", err)
+    }
+    if err := oprot.WriteFieldEnd(); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
+  }
+  return err
+}
+
+func (p *BaseServiceFindPersonByIdentifierResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("BaseServiceFindPersonByIdentifierResult(%+v)", *p)
+}
+
+// Attributes:
+//  - ID
+type BaseServiceFindPersonByIdArgs struct {
+  ID string `thrift:"id,1,required" db:"id" json:"id"`
+}
+
+func NewBaseServiceFindPersonByIdArgs() *BaseServiceFindPersonByIdArgs {
+  return &BaseServiceFindPersonByIdArgs{}
+}
+
+
+func (p *BaseServiceFindPersonByIdArgs) GetID() string {
+  return p.ID
+}
+func (p *BaseServiceFindPersonByIdArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+  var issetID bool = false;
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 1:
+      if err := p.ReadField1(iprot); err != nil {
+        return err
+      }
+      issetID = true
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  if !issetID{
+    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field ID is not set"));
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdArgs)  ReadField1(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 1: ", err)
+} else {
+  p.ID = v
+}
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("FindPersonById_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField1(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdArgs) writeField1(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("id", thrift.STRING, 1); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:id: ", p), err) }
+  if err := oprot.WriteString(string(p.ID)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.id (1) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:id: ", p), err) }
+  return err
+}
+
+func (p *BaseServiceFindPersonByIdArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("BaseServiceFindPersonByIdArgs(%+v)", *p)
+}
+
+// Attributes:
+//  - Success
+type BaseServiceFindPersonByIdResult struct {
+  Success *domain.Person `thrift:"success,0" db:"success" json:"success,omitempty"`
+}
+
+func NewBaseServiceFindPersonByIdResult() *BaseServiceFindPersonByIdResult {
+  return &BaseServiceFindPersonByIdResult{}
+}
+
+var BaseServiceFindPersonByIdResult_Success_DEFAULT *domain.Person
+func (p *BaseServiceFindPersonByIdResult) GetSuccess() *domain.Person {
+  if !p.IsSetSuccess() {
+    return BaseServiceFindPersonByIdResult_Success_DEFAULT
+  }
+return p.Success
+}
+func (p *BaseServiceFindPersonByIdResult) IsSetSuccess() bool {
+  return p.Success != nil
+}
+
+func (p *BaseServiceFindPersonByIdResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 0:
+      if err := p.ReadField0(iprot); err != nil {
+        return err
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdResult)  ReadField0(iprot thrift.TProtocol) error {
+  p.Success = &domain.Person{}
+  if err := p.Success.Read(iprot); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("FindPersonById_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField0(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByIdResult) writeField0(oprot thrift.TProtocol) (err error) {
+  if p.IsSetSuccess() {
+    if err := oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
+    if err := p.Success.Write(oprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
+    }
+    if err := oprot.WriteFieldEnd(); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
+  }
+  return err
+}
+
+func (p *BaseServiceFindPersonByIdResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("BaseServiceFindPersonByIdResult(%+v)", *p)
+}
+
+// Attributes:
+//  - Name
+type BaseServiceFindPersonByNameArgs struct {
+  Name string `thrift:"name,1,required" db:"name" json:"name"`
+}
+
+func NewBaseServiceFindPersonByNameArgs() *BaseServiceFindPersonByNameArgs {
+  return &BaseServiceFindPersonByNameArgs{}
+}
+
+
+func (p *BaseServiceFindPersonByNameArgs) GetName() string {
+  return p.Name
+}
+func (p *BaseServiceFindPersonByNameArgs) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+  var issetName bool = false;
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 1:
+      if err := p.ReadField1(iprot); err != nil {
+        return err
+      }
+      issetName = true
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  if !issetName{
+    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Name is not set"));
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByNameArgs)  ReadField1(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 1: ", err)
+} else {
+  p.Name = v
+}
+  return nil
+}
+
+func (p *BaseServiceFindPersonByNameArgs) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("FindPersonByName_args"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField1(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByNameArgs) writeField1(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("name", thrift.STRING, 1); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:name: ", p), err) }
+  if err := oprot.WriteString(string(p.Name)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.name (1) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:name: ", p), err) }
+  return err
+}
+
+func (p *BaseServiceFindPersonByNameArgs) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("BaseServiceFindPersonByNameArgs(%+v)", *p)
+}
+
+// Attributes:
+//  - Success
+type BaseServiceFindPersonByNameResult struct {
+  Success []*domain.Person `thrift:"success,0" db:"success" json:"success,omitempty"`
+}
+
+func NewBaseServiceFindPersonByNameResult() *BaseServiceFindPersonByNameResult {
+  return &BaseServiceFindPersonByNameResult{}
+}
+
+var BaseServiceFindPersonByNameResult_Success_DEFAULT []*domain.Person
+
+func (p *BaseServiceFindPersonByNameResult) GetSuccess() []*domain.Person {
+  return p.Success
+}
+func (p *BaseServiceFindPersonByNameResult) IsSetSuccess() bool {
+  return p.Success != nil
+}
+
+func (p *BaseServiceFindPersonByNameResult) Read(iprot thrift.TProtocol) error {
+  if _, err := iprot.ReadStructBegin(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+  }
+
+
+  for {
+    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin()
+    if err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+    }
+    if fieldTypeId == thrift.STOP { break; }
+    switch fieldId {
+    case 0:
+      if err := p.ReadField0(iprot); err != nil {
+        return err
+      }
+    default:
+      if err := iprot.Skip(fieldTypeId); err != nil {
+        return err
+      }
+    }
+    if err := iprot.ReadFieldEnd(); err != nil {
+      return err
+    }
+  }
+  if err := iprot.ReadStructEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByNameResult)  ReadField0(iprot thrift.TProtocol) error {
+  _, size, err := iprot.ReadListBegin()
+  if err != nil {
+    return thrift.PrependError("error reading list begin: ", err)
+  }
+  tSlice := make([]*domain.Person, 0, size)
+  p.Success =  tSlice
+  for i := 0; i < size; i ++ {
+    _elem23 := &domain.Person{}
+    if err := _elem23.Read(iprot); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem23), err)
+    }
+    p.Success = append(p.Success, _elem23)
+  }
+  if err := iprot.ReadListEnd(); err != nil {
+    return thrift.PrependError("error reading list end: ", err)
+  }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByNameResult) Write(oprot thrift.TProtocol) error {
+  if err := oprot.WriteStructBegin("FindPersonByName_result"); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
+  if p != nil {
+    if err := p.writeField0(oprot); err != nil { return err }
+  }
+  if err := oprot.WriteFieldStop(); err != nil {
+    return thrift.PrependError("write field stop error: ", err) }
+  if err := oprot.WriteStructEnd(); err != nil {
+    return thrift.PrependError("write struct stop error: ", err) }
+  return nil
+}
+
+func (p *BaseServiceFindPersonByNameResult) writeField0(oprot thrift.TProtocol) (err error) {
+  if p.IsSetSuccess() {
+    if err := oprot.WriteFieldBegin("success", thrift.LIST, 0); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
+    if err := oprot.WriteListBegin(thrift.STRUCT, len(p.Success)); err != nil {
+      return thrift.PrependError("error writing list begin: ", err)
+    }
+    for _, v := range p.Success {
+      if err := v.Write(oprot); err != nil {
+        return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", v), err)
+      }
+    }
+    if err := oprot.WriteListEnd(); err != nil {
+      return thrift.PrependError("error writing list end: ", err)
+    }
+    if err := oprot.WriteFieldEnd(); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
+  }
+  return err
+}
+
+func (p *BaseServiceFindPersonByNameResult) String() string {
+  if p == nil {
+    return "<nil>"
+  }
+  return fmt.Sprintf("BaseServiceFindPersonByNameResult(%+v)", *p)
 }
 
 
