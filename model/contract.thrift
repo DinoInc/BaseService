@@ -1,14 +1,7 @@
 include "domain.thrift"
 
 namespace go contract
-
-struct ReturnType {
-	1: required i32 code
-	2: optional string resource
-	3: optional string target
-	4: optional string value
-	5: required string message
-}
+namespace java contract
 
 service BaseService {
 
@@ -26,14 +19,8 @@ service BaseService {
 	 *
 	 */
 
-	ReturnType AddPatient (
-		1 : required list<domain.Identifier> identifier,
-		2 : list<domain.HumanName> name,
-		3 : list<domain.ContactPoint> contact,
-		4 : domain.enumPatientGender gender,
-		5 : i32 birthDate,
-		6 : list<domain.Address> address,
-		7 : required bool issueMR,
+	domain.Patient AddPatient (
+		1 : required domain.Patient patient,
 	)
 
 	/**
