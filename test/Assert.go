@@ -3,8 +3,8 @@ package test
 import "testing"
 import "strconv"
 import "reflect"
+import "bytes"
 import "github.com/DinoInc/BaseService"
-
 
 var ReflectNullable = []reflect.Kind{
 	reflect.Chan,
@@ -51,7 +51,7 @@ func AssertNotNil(t *testing.T, testName string, varName string, input interface
 }
 
 func AssertCode(t *testing.T, testName string, err error, expectedCode int) {
-	
+
 	baseServiceError, isBaseServiceError := err.(BaseService.Error)
 
 	if !isBaseServiceError {
@@ -61,4 +61,53 @@ func AssertCode(t *testing.T, testName string, err error, expectedCode int) {
 	if isBaseServiceError && baseServiceError.Code != expectedCode {
 		t.Error(testName + ", err.Code = " + strconv.Itoa(baseServiceError.Code) + " not match, expected = " + strconv.Itoa(expectedCode))
 	}
+}
+
+// objectsAreEqual determines if two objects are considered equal.
+//
+// This function does no assertion of any kind.
+func objectsAreEqual(expected, actual interface{}) bool {
+
+	if expected == nil || actual == nil {
+		return expected == actual
+	}
+	if exp, ok := expected.([]byte); ok {
+		act, ok := actual.([]byte)
+		if !ok {
+			return false
+		} else if exp == nil || act == nil {
+			return exp == nil && act == nil
+		}
+		return bytes.Equal(exp, act)
+	}
+	return reflect.DeepEqual(expected, actual)
+
+}
+
+// objectsAreEqualValues gets whether two objects are equal, or if their
+// values are equal.
+func objectsAreEqualValues(expected, actual interface{}) bool {
+	if objectsAreEqual(expected, actual) {
+		return true
+	}
+
+	actualType := reflect.TypeOf(actual)
+	if actualType == nil {
+		return false
+	}
+	expectedValue := reflect.ValueOf(expected)
+	if expectedValue.IsValid() && expectedValue.Type().ConvertibleTo(actualType) {
+		// Attempt comparison after type conversion
+		return reflect.DeepEqual(expectedValue.Convert(actualType).Interface(), actual)
+	}
+
+	return false
+}
+
+func AssertEqual(t *testing.T, testName string, varName string, input interface{}, expectedValue interface{}) {
+
+	if !objectsAreEqualValues(expectedValue, input) {
+		t.Error(testName + " " + varName + " not match")
+	}
+
 }

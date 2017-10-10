@@ -4,7 +4,7 @@ import "testing"
 import "github.com/DinoInc/BaseService"
 
 func TestFindPersonByIdNotFound(t *testing.T) {
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	res, err := service.FindPersonById("000000000000000000000000")
 
 	AssertNotNil(t, "FindPersonById on NotFound", "err", err)
@@ -14,7 +14,7 @@ func TestFindPersonByIdNotFound(t *testing.T) {
 }
 
 func TestFindPersonByIdFound(t *testing.T) {
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	res, err := service.FindPersonById("59cb80e4fad1c100018960dc")
 
 	AssertNil(t, "FindPersonById on Found", "err", err)

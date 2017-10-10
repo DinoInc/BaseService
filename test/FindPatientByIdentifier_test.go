@@ -8,7 +8,7 @@ import (
 
 func TestFindPatientByIdentifierNotFound(t *testing.T) {
 
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	identifier := domain.NewIdentifier()
 
 	identifier.System = new(string)
@@ -29,7 +29,7 @@ func TestFindPatientByIdentifierNotFound(t *testing.T) {
 
 func TestFindPatientByIdentifierFound(t *testing.T) {
 
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	identifier := domain.NewIdentifier()
 
 	identifier.System = new(string)
@@ -57,7 +57,7 @@ func TestFindPatientByIdentifierFound(t *testing.T) {
 
 func TestFindPatientByIdentifierValue(t *testing.T) {
 
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	identifier := domain.NewIdentifier()
 
 	identifier.Value = new(string)
@@ -83,7 +83,7 @@ func TestFindPatientByIdentifierValue(t *testing.T) {
 
 func TestFindPatientByIdentifierSystem(t *testing.T) {
 
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	identifier := domain.NewIdentifier()
 
 	identifier.System = new(string)

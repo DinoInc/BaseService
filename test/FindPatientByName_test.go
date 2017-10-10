@@ -4,7 +4,7 @@ import "testing"
 import "github.com/DinoInc/BaseService"
 
 func TestFindPatientByNameNotFound(t *testing.T) {
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	res, err := service.FindPatientByName("Upin")
 
 	AssertNil(t, "FindPatientByName on NotFound", "err", err)
@@ -17,7 +17,7 @@ func TestFindPatientByNameNotFound(t *testing.T) {
 }
 
 func TestFindPatientByNameSimilar(t *testing.T) {
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	res, err := service.FindPatientByName("Jim")
 
 	AssertNil(t, "FindPatientByName on Similar", "err", err)
@@ -37,7 +37,7 @@ func TestFindPatientByNameSimilar(t *testing.T) {
 }
 
 func TestFindPatientByNameExact(t *testing.T) {
-	service := BaseService.NewBaseService("http://server.ibrohim.me:3001")
+	service := BaseService.NewBaseService(testServerEndpoint)
 	res, err := service.FindPatientByName("Peter James")
 
 	AssertNil(t, "FindPatientByName on Exact", "err", err)
