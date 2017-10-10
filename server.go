@@ -28,7 +28,7 @@ func RunServer(transportFactory thrift.TTransportFactory, protocolFactory thrift
 	}
 	fmt.Printf("%T\n", transport)
 
-	handler := NewBaseService("server.ibrohim.me:3001")
+	handler := NewBaseService("http://server.ibrohim.me:3001")
 	processor := contract.NewBaseServiceProcessor(handler)
 	server := thrift.NewTSimpleServer4(processor, transport, transportFactory, protocolFactory)
 
