@@ -9,7 +9,6 @@ import (
 	"strings"
 )
 import (
-	"github.com/DinoInc/BaseService/contract"
 	"github.com/DinoInc/BaseService/domain"
 )
 
@@ -78,7 +77,7 @@ func readPatient(responseBody io.Reader) (*domain.Patient, error) {
 //  - Address
 //  - IssueMR
 
-func (s *BaseService) AddPatient(identifier []*domain.Identifier, name []*domain.HumanName, contact []*domain.ContactPoint, gender domain.EnumPatientGender, birthDate int32, address []*domain.Address, issueMR bool) (*contract.ReturnType, error) {
+func (s *BaseService) AddPatient(patient *domain.Patient) (r *domain.Patient, err error) {
 	return nil, nil
 }
 
@@ -121,6 +120,7 @@ func (s *BaseService) FindPatientById(id string) (r *domain.Patient, err error) 
 	res, err := http.Get(s.endpoint + "/Patient/" + id)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		return nil, NewError(408, "FHIR Request time out.")
 	}
 
