@@ -16,7 +16,7 @@ if [ "$current_version" != "Thrift version $THRIFT_VERSION" ]; then
 fi
 
 cd model
-./inflator -schema-dir=./schemas/ -schema=Person,Patient -namespace=domain
+./inflator --schema-dir=./schemas/ --schema=Person,Patient --namespace go:domain --namespace java:inc.dino.e_medicalrecord --thrift-file domain.thrift --sed-file domain.sed
 if (($? != 0)); then
 	echo "Fail to inflate thrift file."
 	exit 1
